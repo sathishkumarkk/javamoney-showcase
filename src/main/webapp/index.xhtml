@@ -1,11 +1,10 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
 	template="WEB-INF/template/default.xhtml"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	>
-	<ui:define name="title">TrakStok</ui:define>
+	<ui:define name="title">JSR 354 Showcase</ui:define>
 
 
 	<ui:define name="content">
@@ -25,6 +24,12 @@
 		</div>
 
 		
+                                <h:panelGroup>
+                                <h:form prependId="false">
+                                    
+                                    <h:commandButton action="core" value="Core" />
+                                </h:form>
+                                </h:panelGroup>
 
 	</ui:define>
 </ui:composition>
