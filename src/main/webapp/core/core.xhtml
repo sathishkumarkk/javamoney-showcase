@@ -37,7 +37,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label" for="textinput">Functionality</label>
                                         <div class="col-sm-7">
-                                            <h:selectOneListbox class="form-control" value="#{coreBean.functionality}" onchange="submit()">
+                                            <h:selectOneMenu class="form-control" value="#{coreBean.functionality}" onchange="submit()">
 
                                                 <f:valueChangeListener type="org.javamoney.showcase.listener.CoreFunctionalityChangeListener" />
 
@@ -46,7 +46,7 @@
                                                 <f:selectItem itemLabel="Currency code" itemValue="2"/>
                                                 <f:selectItem itemLabel="Numeric code" itemValue="3"/>
                                                 <f:selectItem itemLabel="Fractional digits" itemValue="4"/>
-                                            </h:selectOneListbox>
+                                            </h:selectOneMenu>
                                         </div>
                                     </div>
 
@@ -57,7 +57,10 @@
                                         <c:if test="#{coreBean.canShowCurrencyCode1()}">
                                             <label class="col-sm-5 control-label" for="textinput">Currency Code</label>
                                             <div class="col-sm-6">
-                                                <h:inputText class="form-control" id="currencyCode1"/>
+                                                <h:selectOneMenu class="form-control" value="#{coreBean.currencyCode1}" >
+                                                    <f:selectItem itemLabel="USD" itemValue="USD" />
+                                                    <f:selectItem itemLabel="EUR" itemValue="EUR" />
+                                                </h:selectOneMenu>    
                                             </div>
                                         </c:if>
                                     </div>
@@ -69,7 +72,10 @@
                                         <c:if test="#{coreBean.canShowCurrencyCode2()}">
                                             <label class="col-sm-5 control-label" for="textinput">Currency Code</label>
                                             <div class="col-sm-6">
-                                                <h:inputText class="form-control" id="currencyCode2"/>
+                                                <h:selectOneMenu class="form-control" value="#{coreBean.currencyCode2}" >
+                                                    <f:selectItem itemLabel="USD" itemValue="USD" />
+                                                    <f:selectItem itemLabel="EUR" itemValue="EUR" />
+                                                </h:selectOneMenu>  
                                             </div>
                                         </c:if>
                                     </div>
@@ -82,6 +88,13 @@
                                                 <h:commandButton class="btn btn-default" value="Cancel" action="#{coreBean.cancel()}"/>
                                                 <h:commandButton class="btn btn-primary" value="Test" action="#{coreBean.test()}"/>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label" for="textinput">Result</label>
+                                        <div class="col-md-12">
+                                            <h:inputTextarea  class="col-sm-12" value="#{coreBean.result}" />
                                         </div>
                                     </div>
 
