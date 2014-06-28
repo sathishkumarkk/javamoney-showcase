@@ -15,17 +15,20 @@
  */
 package org.javamoney.showcase.bean;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Named;
+import javax.enterprise.context.RequestScoped;
 import javax.money.CurrencyUnit;
+import javax.money.MonetaryCurrencies;
 import org.javamoney.showcase.utiity.CurrencyUtil;
 
 /**
  *
  * @author gshenoy
  */
-@ManagedBean
-@SessionScoped
+@RequestScoped
+@Named
 public class CoreBean {
 
     private String functionality = "0";
@@ -37,6 +40,21 @@ public class CoreBean {
 
     public CoreBean() {
 
+    }
+    
+    public List<CurrencyUnit> getCurrencyUnitList() {
+        List<CurrencyUnit> currencyUnitList = new ArrayList<>();
+        
+        // Creating US Doller Currency
+        CurrencyUnit usdCur = MonetaryCurrencies.getCurrency("USD");
+        //Creating Euro Currency.
+        CurrencyUnit eurCurr = MonetaryCurrencies.getCurrency("EUR");
+     
+        
+        currencyUnitList.add(usdCur);
+        currencyUnitList.add(eurCurr);
+      
+        return currencyUnitList;
     }
 
     public String getFunctionality() {
