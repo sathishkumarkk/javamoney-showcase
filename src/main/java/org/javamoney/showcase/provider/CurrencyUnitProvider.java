@@ -15,6 +15,7 @@
  */
 package org.javamoney.showcase.provider;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -46,6 +47,11 @@ public class CurrencyUnitProvider implements CurrencyProviderSpi {
 
     @Override
     public CurrencyUnit getCurrencyUnit(Locale locale) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Collection<CurrencyUnit> getCurrencies() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

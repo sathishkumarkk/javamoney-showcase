@@ -16,14 +16,38 @@
                     <div class="col-md-12"  style="margin-top: 50px;margin-bottom: 30px">
 
                         <span>
-                            API for handling and calculating with monetary amounts.Support different numeric capabilities and guarantees to be provided by
-                            the monetary amount implementations. These data is called <i>monetary context</i> and must be accessible from an amount instance during runtime.
-                            Extension points for adding additional logic, e.g. for extending the arithmetic capabilities, rounding etc. API to externalize the numeric part of an amount
-                            to the most useful representation on a runtime platform. API to to create a new amount instance using an existing amount as a template, hereby changing
-                            currency and/or numeric part as required. This ensures maximal portability and allows externalization of complex financial calculations.
-                            Provides a minimal set of roundings and also supports arbitrary custom roundings.
-                        </span>
+The package javax.money contains the types representing currencies and monetary
+amounts, the core exceptions as well as supporting types for rounding and the extensions API.
+
+CurrencyUnit models the minimal properties of a currency.
+● MonetaryAmount defines what an amount^s capabilities are. It provides interoperability
+0.8 (Public Review 2) 17
+Java Money Specification
+between different implementations on functional level. Interoperability on data level is
+ensured by getNumber() and getCurrency(). As a consequence amount can be
+implemented in different ways, focusing on the behavioural and data representation
+requirements implied by the concrete use cases.
+● NumberValue returns the numeric part of an amount, so it can be accessed and
+externalized in different ways. Its purpose is to ensure maximal interoperability with
+existing functionalities in the JDK. Therefore it also extends java.lang.Number.
+● NumberSupplier and CurrencySupplier model functional interfaces as defined
+by JDK 8.
+● MonetaryOperator and MonetaryQuery model the extension points for monetary
+logic. They allow to implement external functionalities, either adding operations returning
+a MonetaryAmount (MonetaryOperator), or returning any arbitrary other value (
+MonetaryQuery).
+● the MonetaryAmount factory finally represents an abstraction for creating new
+instances of amounts. Besides setting an amount currency and number value, it allows
+also to change the numeric capabilities, if the underlying implementation supports doing
+this. The capabilities available for a concrete factory can be queried by accessing
+maximal MonetaryContext.
+● MonetaryContext defines the numeric capabilities of an instance as an immutable
+and platform independent type.
+● MonetaryException is the base exception class for the money API, it extends
+RuntimeException.
+		 </span>
                     </div>
+	
                     <div class="col-md-12">
                         <div class="col-md-4">
 
@@ -35,6 +59,27 @@
                                     <legend>Currencies</legend>
 
                                     <div class="form-group">
+                                        
+                                        <table width="100%">
+                                            <thead>
+                                                <td>Currency Code</td>
+                                                <td>Num. Code</td>
+                                                <td>Fractional</td> 
+                                            </thead>
+                                            
+                                            <c:forEach items="#{coreBean.currencyUnitList}" var="currUnit">
+                                            <tr>
+                                                <td>#{currUnit.currencyCode}</td>
+                                                <td>#{currUnit.numericCode}</td>
+                                                <td>#{currUnit.defaultFractionDigits}</td>
+                                          
+                                            </tr>
+                                            </c:forEach>
+                                        </table>
+                                        
+                                        
+                                        
+                                     
                                         <label class="col-sm-4 control-label" for="textinput">Functionality</label>
                                         <div class="col-sm-7">
                                             <h:selectOneMenu class="form-control" value="#{coreBean.functionality}" onchange="submit()">
@@ -52,7 +97,7 @@
 
 
 
-                                    <!-- Text input-->
+                              
                                     <div class="form-group">     
                                         <c:if test="#{coreBean.canShowCurrencyCode1()}">
                                             <label class="col-sm-5 control-label" for="textinput">Currency Code</label>
@@ -60,14 +105,13 @@
                                                 <h:selectOneMenu class="form-control" value="#{coreBean.currencyCode1}" >
                                                     <f:selectItem itemLabel="USD" itemValue="USD" />
                                                     <f:selectItem itemLabel="EUR" itemValue="EUR" />
+                                                      <f:selectItem itemLabel="INR" itemValue="INR" />
                                                 </h:selectOneMenu>    
                                             </div>
                                         </c:if>
                                     </div>
 
 
-
-                                    <!-- Text input-->
                                     <div class="form-group">
                                         <c:if test="#{coreBean.canShowCurrencyCode2()}">
                                             <label class="col-sm-5 control-label" for="textinput">Currency Code</label>
@@ -109,12 +153,13 @@
                                 <!-- Form Name -->
                                 <legend>Explaination</legend>
                                 <span>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-
-                                    <pre class="prettyprint">
-                                
-                Currency jdkCurrency = Currency.getInstance("CHF");
-		CurrencyUnit cur = MonetaryCurrencies.getCurrency("CHF");
+                                    Creating a simple Currnecy object in JavaMoney is very simple like the treditional use of Currency class. As you need is to call the static method of <i>MonetaryCurrencies.getCurrency</i>
+                                    <pre class="prettyprint" align="left">
+        
+         // Prior to Java 8
+        Currency jdkCurrency = Currency.getInstance("CHF"); 
+        // Java 9
+	CurrencyUnit cur = MonetaryCurrencies.getCurrency("CHF"); 
                                 
                                     </pre>
 
@@ -124,11 +169,7 @@
                         </div>
                     </div>
                     <hr/>
-                    <!--This is the second section-->
-                    <div class="col-md-12"  style="margin-top: 50px;margin-bottom: 30px">
-
-                        <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. </span>
-                    </div>
+                   <br/>
                     <div class="col-md-12">
                         <div class="col-md-6">
                             <fieldset>

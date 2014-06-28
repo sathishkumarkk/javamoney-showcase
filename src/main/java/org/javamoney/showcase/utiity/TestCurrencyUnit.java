@@ -84,4 +84,9 @@ public class TestCurrencyUnit implements CurrencyUnit {
         return true;
     }
 
+    @Override
+    public int compareTo(CurrencyUnit o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
