@@ -20,6 +20,8 @@ import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
 import javax.money.MonetaryAmountFactory;
 import javax.money.MonetaryContext;
+import javax.money.MonetaryCurrencies;
+import javax.money.MonetaryException;
 import javax.money.MonetaryOperator;
 import javax.money.MonetaryQuery;
 import javax.money.NumberValue;
@@ -30,20 +32,40 @@ import javax.money.NumberValue;
  */
 public class TestAmount implements MonetaryAmount {
 
-    private BigDecimal number;
+    private long number;
     private CurrencyUnit currency;
+    private MonetaryContext monetaryContext;
+
+    private static final int SCALE = 5;
+
+    private static final MonetaryContext MONETARY_CONTEXT
+            = new MonetaryContext.Builder(TestAmount.class).setMaxScale(SCALE)
+            .setFixedScale(true).setPrecision(19).build();
+
+    public static final TestAmount MAX = new TestAmount(Long.MAX_VALUE, MonetaryCurrencies.getCurrency("XXX"));
+    public static final TestAmount MIN = new TestAmount(Long.MIN_VALUE, MonetaryCurrencies.getCurrency("XXX"));
+
+    private static final BigDecimal MAX_BD = MAX.getBigDecimal();
+    private static final BigDecimal MIN_BD = MIN.getBigDecimal();
 
     public TestAmount() {
-        
+
     }
-    
-    public TestAmount(BigDecimal number, CurrencyUnit currency) {
+
+    public TestAmount(long number, CurrencyUnit currency) {
         this.number = number;
         this.currency = currency;
+        this.monetaryContext = MONETARY_CONTEXT;
+    }
+
+    private TestAmount(Number number, CurrencyUnit currency) {
+        this.number = getLongValue(number);
+        this.currency = currency;
+        this.monetaryContext = MONETARY_CONTEXT;
     }
 
     public static TestAmount of(Number number, CurrencyUnit currency) {
-        return new TestAmount(BigDecimal.valueOf(number.doubleValue()), currency);
+        return new TestAmount(number, currency);
     }
 
     @Override
@@ -53,7 +75,7 @@ public class TestAmount implements MonetaryAmount {
 
     @Override
     public MonetaryContext getMonetaryContext() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return monetaryContext;
     }
 
     @Override
@@ -73,162 +95,187 @@ public class TestAmount implements MonetaryAmount {
 
     @Override
     public MonetaryAmountFactory<? extends MonetaryAmount> getFactory() {
-       return new TestAmountFactory().setAmount(this);
+        return new TestAmountFactory().setAmount(this);
     }
 
     @Override
     public boolean isGreaterThan(MonetaryAmount amount) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getBigDecimal().compareTo(amount.getNumber().numberValue(BigDecimal.class)) > 0;
     }
 
     @Override
     public boolean isGreaterThanOrEqualTo(MonetaryAmount amount) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getBigDecimal().compareTo(amount.getNumber().numberValue(BigDecimal.class)) >= 0;
     }
 
     @Override
     public boolean isLessThan(MonetaryAmount amount) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getBigDecimal().compareTo(amount.getNumber().numberValue(BigDecimal.class)) < 0;
     }
 
     @Override
     public boolean isLessThanOrEqualTo(MonetaryAmount amt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getBigDecimal().compareTo(amt.getNumber().numberValue(BigDecimal.class)) <= 0;
     }
 
     @Override
     public boolean isEqualTo(MonetaryAmount amount) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getBigDecimal().compareTo(amount.getNumber().numberValue(BigDecimal.class)) == 0;
     }
 
     @Override
     public boolean isNegative() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.number < 0L;
     }
 
     @Override
     public boolean isNegativeOrZero() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.number <= 0L;
     }
 
     @Override
     public boolean isPositive() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.number > 0L;
     }
 
     @Override
     public boolean isPositiveOrZero() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.number >= 0L;
     }
 
     @Override
     public boolean isZero() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.number == 0L;
     }
 
     @Override
     public int signum() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.number < 0) {
+            return -1;
+        }
+        if (this.number == 0) {
+            return 0;
+        }
+        return 1;
     }
 
     @Override
     public MonetaryAmount add(MonetaryAmount amount) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (amount.isZero()) {
+            return this;
+        }
+        try {
+            return new TestAmount(Math.addExact(this.number, getLongValue(amount.getNumber())), getCurrency());
+        } catch (Exception e) {
+            throw new MonetaryException("Exception occured while adding", e);
+        }
     }
 
     @Override
     public MonetaryAmount subtract(MonetaryAmount amount) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new TestAmount(Math.subtractExact(this.number, getLongValue(amount.getNumber())), getCurrency());
     }
 
     @Override
     public MonetaryAmount multiply(long multiplicand) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new TestAmount(BigDecimalUtil.of(multiplicand).multiply(getBigDecimal()), getCurrency());
     }
 
     @Override
     public MonetaryAmount multiply(double multiplicand) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new TestAmount(BigDecimalUtil.of(multiplicand).multiply(getBigDecimal()), getCurrency());
     }
 
     @Override
     public MonetaryAmount multiply(Number multiplicand) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new TestAmount(BigDecimalUtil.of(multiplicand).multiply(getBigDecimal()), getCurrency());
     }
 
     @Override
     public MonetaryAmount divide(long divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (divisor == 1L) {
+            return this;
+        }
+        return new TestAmount(this.number / divisor, getCurrency());
     }
 
     @Override
     public MonetaryAmount divide(double divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (divisor == 1.0d) {
+            return this;
+        }
+        return new TestAmount(this.number / divisor, getCurrency());
     }
 
     @Override
     public MonetaryAmount divide(Number divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return divide(divisor.doubleValue());
     }
 
     @Override
     public MonetaryAmount remainder(long divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new TestAmount(this.number % divisor, getCurrency());
     }
 
     @Override
     public MonetaryAmount remainder(double divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new TestAmount(this.number % getLongValue(divisor), getCurrency());
     }
 
     @Override
     public MonetaryAmount remainder(Number divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new TestAmount(this.number % getLongValue(divisor), getCurrency());
     }
 
     @Override
     public MonetaryAmount[] divideAndRemainder(long divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return divideAndRemainder(BigDecimal.valueOf(divisor));
     }
 
     @Override
     public MonetaryAmount[] divideAndRemainder(double divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return divideAndRemainder(BigDecimal.valueOf(divisor));
     }
 
     @Override
     public MonetaryAmount[] divideAndRemainder(Number divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        BigDecimal div = BigDecimalUtil.of(divisor);
+        BigDecimal[] res = getBigDecimal().divideAndRemainder(div);
+        return new TestAmount[]{new TestAmount(res[0], getCurrency()), new TestAmount(res[1], getCurrency())};
     }
 
     @Override
     public MonetaryAmount divideToIntegralValue(long divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return divideToIntegralValue(BigDecimal.valueOf(divisor));
     }
 
     @Override
     public MonetaryAmount divideToIntegralValue(double divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return divideToIntegralValue(BigDecimal.valueOf(divisor));
     }
 
     @Override
     public MonetaryAmount divideToIntegralValue(Number divisor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        BigDecimal div = BigDecimalUtil.of(divisor);
+        return new TestAmount(getBigDecimal().divideToIntegralValue(div), getCurrency());
     }
 
     @Override
     public MonetaryAmount scaleByPowerOfTen(int power) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new TestAmount(getBigDecimal().scaleByPowerOfTen(power), getCurrency());
     }
 
     @Override
     public MonetaryAmount abs() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isPositiveOrZero()) {
+            return this;
+        }
+        return negate();
     }
 
     @Override
     public MonetaryAmount negate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new TestAmount(this.number * -1, getCurrency());
     }
 
     @Override
@@ -238,12 +285,30 @@ public class TestAmount implements MonetaryAmount {
 
     @Override
     public MonetaryAmount stripTrailingZeros() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new TestAmount(getBigDecimal().stripTrailingZeros(), getCurrency());
     }
 
     @Override
     public int compareTo(MonetaryAmount o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int compare = getCurrency().getCurrencyCode().compareTo(o.getCurrency().getCurrencyCode());
+        if (compare == 0) {
+            compare = getNumber().numberValue(BigDecimal.class).compareTo(o.getNumber().numberValue(BigDecimal.class));
+        }
+        return compare;
+    }
+
+    private long getLongValue(Number num) {
+        BigDecimal bd = BigDecimalUtil.of(num);
+        if (bd.compareTo(MIN_BD) < 0) {
+            throw new MonetaryException("Overflow: " + number + " < " + MIN_BD);
+        } else if (bd.compareTo(MAX_BD) > 0) {
+            throw new MonetaryException("Overflow: " + number + " > " + MAX_BD);
+        }
+        return bd.movePointRight(SCALE).longValue();
+    }
+
+    private BigDecimal getBigDecimal() {
+        return BigDecimal.valueOf(this.number).movePointLeft(SCALE);
     }
 
 }
