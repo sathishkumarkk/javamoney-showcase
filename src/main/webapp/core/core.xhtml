@@ -20,31 +20,39 @@ The package javax.money contains the types representing currencies and monetary
 amounts, the core exceptions as well as supporting types for rounding and the extensions API.
 
 CurrencyUnit models the minimal properties of a currency.
-● MonetaryAmount defines what an amount^s capabilities are. It provides interoperability
+<br></br>
+● MonetaryAmount defines what an amount's capabilities are. It provides interoperability
 0.8 (Public Review 2) 17
 Java Money Specification
 between different implementations on functional level. Interoperability on data level is
 ensured by getNumber() and getCurrency(). As a consequence amount can be
 implemented in different ways, focusing on the behavioural and data representation
 requirements implied by the concrete use cases.
+<br></br>
 ● NumberValue returns the numeric part of an amount, so it can be accessed and
 externalized in different ways. Its purpose is to ensure maximal interoperability with
 existing functionalities in the JDK. Therefore it also extends java.lang.Number.
+<br></br>
 ● NumberSupplier and CurrencySupplier model functional interfaces as defined
 by JDK 8.
+<br></br>
 ● MonetaryOperator and MonetaryQuery model the extension points for monetary
 logic. They allow to implement external functionalities, either adding operations returning
 a MonetaryAmount (MonetaryOperator), or returning any arbitrary other value (
 MonetaryQuery).
+<br></br>
 ● the MonetaryAmount factory finally represents an abstraction for creating new
 instances of amounts. Besides setting an amount currency and number value, it allows
 also to change the numeric capabilities, if the underlying implementation supports doing
 this. The capabilities available for a concrete factory can be queried by accessing
 maximal MonetaryContext.
+<br></br>
 ● MonetaryContext defines the numeric capabilities of an instance as an immutable
 and platform independent type.
+<br></br>
 ● MonetaryException is the base exception class for the money API, it extends
 RuntimeException.
+<br></br>
 		 </span>
                     </div>
 	
@@ -77,71 +85,9 @@ RuntimeException.
                                             </c:forEach>
                                         </table>
                                         
-                                        
+                                        </div>
                                         
                                      
-                                        <label class="col-sm-4 control-label" for="textinput">Functionality</label>
-                                        <div class="col-sm-7">
-                                            <h:selectOneMenu class="form-control" value="#{coreBean.functionality}" onchange="submit()">
-
-                                                <f:valueChangeListener type="org.javamoney.showcase.listener.CoreFunctionalityChangeListener" />
-
-                                                <f:selectItem itemLabel="Create new" itemValue="0" />
-                                                <f:selectItem itemLabel="Equality" itemValue="1"/>
-                                                <f:selectItem itemLabel="Currency code" itemValue="2"/>
-                                                <f:selectItem itemLabel="Numeric code" itemValue="3"/>
-                                                <f:selectItem itemLabel="Fractional digits" itemValue="4"/>
-                                            </h:selectOneMenu>
-                                        </div>
-                                    </div>
-
-
-
-                              
-                                    <div class="form-group">     
-                                        <c:if test="#{coreBean.canShowCurrencyCode1()}">
-                                            <label class="col-sm-5 control-label" for="textinput">Currency Code</label>
-                                            <div class="col-sm-6">
-                                                <h:selectOneMenu class="form-control" value="#{coreBean.currencyCode1}" >
-                                                    <f:selectItem itemLabel="USD" itemValue="USD" />
-                                                    <f:selectItem itemLabel="EUR" itemValue="EUR" />
-                                                      <f:selectItem itemLabel="INR" itemValue="INR" />
-                                                </h:selectOneMenu>    
-                                            </div>
-                                        </c:if>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <c:if test="#{coreBean.canShowCurrencyCode2()}">
-                                            <label class="col-sm-5 control-label" for="textinput">Currency Code</label>
-                                            <div class="col-sm-6">
-                                                <h:selectOneMenu class="form-control" value="#{coreBean.currencyCode2}" >
-                                                    <f:selectItem itemLabel="USD" itemValue="USD" />
-                                                    <f:selectItem itemLabel="EUR" itemValue="EUR" />
-                                                </h:selectOneMenu>  
-                                            </div>
-                                        </c:if>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-2 col-sm-10">
-                                            <div class="pull-right">
-
-                                                <h:commandButton class="btn btn-default" value="Cancel" action="#{coreBean.cancel()}"/>
-                                                <h:commandButton class="btn btn-primary" value="Test" action="#{coreBean.test()}"/>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-5 control-label" for="textinput">Result</label>
-                                        <div class="col-md-12">
-                                            <h:inputTextarea  class="col-sm-12" value="#{coreBean.result}" />
-                                        </div>
-                                    </div>
-
                                 </fieldset>
                                 <!--</form>!-->
                             </div><!-- /.row -->
@@ -175,9 +121,19 @@ RuntimeException.
                             <fieldset>
 
                                 <!-- Form Name -->
-                                <legend>Explaination</legend>
+                                <legend>Monetary Amount</legend>
                                 <span>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                                        
+                                    <pre class="prettyprint" align="left">
+        
+// Using a factory implementation
+TestAmount myAmount = TestAmountFactory().create(100, MonetaryCurrencies.getCurrency(currencyCode));
+                                            
+// Use the monetary amount impl directly
+TestAmount myAmount = TestAmount.of(100, MonetaryCurrencies.getCurrency(currencyCode));
+
+
+                                    </pre>
                                 </span>
                             </fieldset>
 
@@ -186,68 +142,12 @@ RuntimeException.
 
                             <div class="row">
                                 <!--<form class="form-horizontal" role="form">!-->
-                                <fieldset>
-
-                                    <!-- Form Name -->
-                                    <legend>Sample 2</legend>
-
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">Line 1</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="Address Line 1" class="form-control"/>
-                                        </div>
-                                    </div>
-
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">Line 2</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="Address Line 2" class="form-control"/>
-                                        </div>
-                                    </div>
-
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">City</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="City" class="form-control"/>
-                                        </div>
-                                    </div>
-
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">State</label>
-                                        <div class="col-sm-4">
-                                            <input type="text" placeholder="State" class="form-control"/>
-                                        </div>
-
-                                        <label class="col-sm-2 control-label" for="textinput">Postcode</label>
-                                        <div class="col-sm-4">
-                                            <input type="text" placeholder="Post Code" class="form-control"/>
-                                        </div>
-                                    </div>
-
-
-
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">Country</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="Country" class="form-control"/>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-2 col-sm-10">
-                                            <div class="pull-right">
-                                                <button type="submit" class="btn btn-default">Cancel</button>
-                                                <button type="submit" class="btn btn-primary">Save</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </fieldset>
+                                <legend>Explaination</legend> 
+                                
+                                Basically new instances of monetary amounts can be created in different ways. One way  will be  by using factories, modeled by the interface javax.money.MonetaryAmountFactory&lt;T&gt;. Instances can be obtained in different ways .<br></br>
+                                ● Calling getFactory() is initialized with the current amount instance’s values, allowing for easily creation of  on an instance of MonetaryAmount , returns an instance that  similar amount instances, with some or multiple properties changed. This is known as  using prototype pattern [Gof]. This is useful for MonetaryOperator  where the default operations available on MonetaryAmount  implementing the logic/result required, or calculations are done externally and a new  implementations,  are not sufficient for  amount is created with the numeric result of that calculation.<br></br> 
+                                ● The MonetaryAmounts  MonetaryAmountFactory  implementation type: singleton also provides access to  instances, hereby also allowing to bind to a specific  MonetaryAmountFactory&lt;MyMoney&gt; fact = MonetaryAmounts.   getAmountFactory(MyMoney.class); fact.withCurrency(“USD”).with(10.50); … MyMoney money = fact.create(); <br></br>
+                                                                
                                 <!--</form>!-->
                             </div><!-- /.row -->
 
