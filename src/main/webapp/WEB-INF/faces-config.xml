@@ -27,6 +27,11 @@ limitations under the License.
 			<to-view-id>/core/core.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
+                <navigation-case>
+			<from-outcome>format</from-outcome>
+			<to-view-id>/format/format.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 		
 	</navigation-rule>
 

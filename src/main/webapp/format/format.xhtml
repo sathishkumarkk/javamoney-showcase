@@ -1,207 +1,267 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="/WEB-INF/template/default.xhtml"
-                xmlns:c="http://java.sun.com/jsp/jstl/core"
-                >
-    <ui:define name="title"></ui:define>
+                template="/WEB-INF/template/template.xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core" 
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">Formatting</ui:define>
 
     <ui:define name="content">
 
-        <div class="container-fluid">
-            <div class="row">
-                <!--This is the first section-->
-                <div class="col-md-12"  style="margin-top: 50px;margin-bottom: 30px">
+        <h:form>
+            <div class="container-fluid">
+                <div class="row">
 
-                    <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. </span>
-                </div>
-                <div class="col-md-12">
-                    <div class="col-md-6">
+                    <div class="col-md-12"  style="margin-top: 50px;margin-bottom: 30px">
 
-                        <div class="row">
-                            <form class="form-horizontal" role="form">
-                                <fieldset>
+                        <div>
+The formatting aspects modeled by several artefacts. Hereby some similarities with artifacts
+from JDK’s <i>java.text</i> package are not accidentally. Basically the formatter instance behaves
+similarly (e.g. is also mutable), whereas the underlying style and symbols were modeled as
+immutable value types.
+<br/><br/>
+<b>Formatting of Monetary Amounts</b><br/>
+Implementations of this JSR must provide a formatter for
+<i>MonetaryAmount</i> instances. Nevertheless formatting is a very complex field the JSR’s expert
+group has decided to provide a simple formatting API only, which covers the following aspects:
+<br></br>
+● Amount values can be rounded for display by applying a <i>MonetaryOperator</i> before
+formatting/printing.
+<br></br>
+● Similarly amount values can be operated after parsing by applying a
+<i>MonetaryOperator</i>. This is the reciprocal operation to the display rounding above.
+<br></br>
+● It is possible to define number grouping with flexible group sizes and different grouping
+characters. as for example needed to format <i>INR</i> (e.g., <i>INR 123456000.21</i> is formatted as <i>INR 12,34,56,000.21</i>).
+            <br/><span style="padding-left:5em">a. as currency code, e.g. <i>USD</i></span>
+<br/><span style="padding-left:5em">b. as numeric currency code, if such a code is defined.</span>
+<br/><span style="padding-left:5em">c. as a (localized) currency symbol, e.g. <i>$</i></span>
+<br/><span style="padding-left:5em">d. as a (localized) currency name, e.g.<i>Schweizer Franken</i></span>
+<br></br>
+● The overall formatting and parsing pattern can be defined similar to
+<i>java.text.DecimalFormat</i>. As consequence, if defining a pattern without any
+currency placeholder ‘<i>¤</i>’ (‘<i>\u00A4</i>’), the currency part can also be omitted from the
+output.
+<br></br>
+		 </div>
+                    </div>
+	
+                    <div class="col-md-12">
+                        
+                        <div class="col-md-6">
+                            <fieldset>
 
-                                    <!-- Form Name -->
-                                    <legend>Sample 1</legend>
+                                <!-- Form Name -->
+                                <legend>Monetary Amount Format</legend>
+                                <span>
+                                    In financial applications additional formatting requirements are quite common (see also
+[JavaMoney]), but these aspects will be beyond the scope of this JSR.
+Nevertheless most of the use cases should be coverable by the implementations of the
+<i>MonetaryAmountFormat</i>interface:
+                                    <pre class="prettyprint" align="left">
+        
+public inteface MonetaryAmountFormat {
+    String <b>format</b>(MonetaryAmount&lt;?&gt; amount);
+    void <b>print</b>(Appendable appendable, MonetaryAmount&lt;?&gt; amount) 
+        throws IOException;
+    MonetaryAmount&lt;?&gt; <b>parse</b>(CharSequence text) 
+    throws ParseException;
+    AmountStyle <b>getAmountStyle</b>();
+    void <b>setAmountStyle</b>(AmountSTyle amountStyle);
+    MonetaryContext <b>getMonetaryContext</b>();
+    void <b>setMonetaryContext</b>(MonetaryContext monetaryContext);
+    CurrencyUnit <b>getDefaultCurrency</b>();
+    void <b>setDefaultCurrency</b>(CurrencyUnit defaultCurrency);
+}
+</pre>
+Hereby<br/>
+● an amount can be formatted to a <i>String</i> or an <i>Appendable</i>, or parsed from a
+<i>String</i>.<br/>
+● The details of the format are managed within an immutable <i>AmountStyle</i> configuration
+value object.<br/>
+● A <i>MonetaryContext</i> defines which type of implementation should be returned as result
+from a parsing operation.<br/>
+● A default <i>CurrencyUnit</i> can be set, that will be used as a currency to create an
+amount on parsing, when no currency information can be read from the input data.
+0.8<br/><br/>
+Similar to the formatters in the JDK implementations of this interface must not be threadsafe.
+So use of them should be synchronized.<br/><br/>
+                                </span>
+                            </fieldset>
 
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">Line 1</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="Address Line 1" class="form-control"/>
-                                        </div>
-                                    </div>
+                        </div>
+                        <div class="col-md-6">
+                            <fieldset>
 
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">Line 2</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="Address Line 2" class="form-control"/>
-                                        </div>
-                                    </div>
+                                <!-- Form Name -->
+                                <legend>Examples</legend>
+                                <span>
+                                    Given the API above, acquiring a <i>MonetaryAmountFormat</i> instance is simple, the most
+                                    simple usage is just creating one for a given <i>Locale</i>:
+                                    <pre class="prettyprint" align="left">
+        
+MonetaryAmountFactory&lt;?&gt; f = MonetaryAmounts.getDefaultAmountFactory();
+MonetaryAmount amount = f.setCurrency(“CHF”).setNumber(12.50).create();
+MonetaryAmountFormat format =
+MonetaryAmountFormats.getAmountFormat(Locale.GERMANY);
+String formatted = format.format(amount); // result: CHF 12,50
+amount = f.setCurrency(“INR”).setNumber(123456789101112.123456).create();
+formatted = format.format(amount); // result: INR 123.456.789.101.112,12 
+                                    </pre>
+                                    For Indian Rupees (<i>INR</i>) it would be, of course, better using the Indian number format and
+                                    different grouping sizes, for this we must first create the corresponding <i>AmountStyle</i>:
+<pre class="prettyprint" align="left">
+AmountStyle style = new AmountStyle.Builder(new Locale(“”,”INR”))
+  .withNumberGroupSizes(3,2).build();
+MonetaryAmountFormat format = 
+  MonetaryAmountFormats.getAmountFormat(style);
+MonetaryAmountFactory&lt;?&gt; f = MonetaryAmounts.getDefaultAmountFactory();
+MonetaryAmount amount =
+  .setCurrency(“INR”).setNumber(123456789101112.123456).create();
+String formatted = format.format(amount);
+  // result: INR 12,34,56,78,91,01,112.12
+</pre>
+                             </span>
+                            </fieldset>
 
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">City</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="City" class="form-control"/>
-                                        </div>
-                                    </div>
+                        </div>
+                    </div>
+                    <hr/>
+                   <br/>
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <fieldset>
 
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">State</label>
-                                        <div class="col-sm-4">
-                                            <input type="text" placeholder="State" class="form-control"/>
-                                        </div>
+                                <!-- Form Name -->
+                                <legend>Configuring a Monetary Amount Formatter</legend>
+                                <span>
+                                    <H4><i>Currency Style</i></H4>
+                                    The <i>javax.money.CurrencyStyle</i> is modeled as an enum type with the following values:<br/>
+                                    ● <i>CODE</i>: render the currency code. Examples: <i>CHF</i>, <i>USD</i><br/>
+                                    ● <i>NUMERIC_CODE</i>: render the numeric code, Examples: <i>62</i>, <i>10</i>, <i>-1</i><br/>
+● NAME: render the localized display name, use the currency code as default, if no
+localized display name is present. Examples: <i>Swiss Francs</i>, <i>Japanese Yen</i><br/>
+● SYMBOL: render the localized currency symbol, use the currency code as default, if no
+localized symbol is present. Examples: $, €, £<br/>
+<H4><i>Amount Style</i></H4>
+The javax.money.format.AmountStyle defines how a MonetaryAmountFormat
+instance should format and/or parse MonetaryAmount instances. Instances of AmountStyle
+can be created using a AmountStyle.Builder. Summarizing the signatures look as follows:
+<pre class="prettyprint" align="left">
+public final class AmountStyle implements Serializable{
+private AmountStyle(...);
+[...]
+public Locale getLocale();
+public CurrencyStyle getCurrencyStyle();
+public String getPattern();
+public String getLocalizedPattern();
+public AmountFormatSymbols getSymbols();
+public MonetaryOperator getDisplayConversion();
+public MonetaryOperator getParseConversion();
+public int[] getGroupingSizes();
+public Builder toBuilder();
+public static final class Builder {
+public Builder(Locale locale);
+public Builder(AmountStyle amountStyle);
+public Builder setCurrencyStyle(CurrencyStyle style);
+public Builder setGroupingSizes(int... groupSizes);
+public Builder setPattern(String pattern)
+public Builder setSymbols(AmountFormatSymbols synbols);
+public Builder setDisplayConversion(MonetaryOperator conversion);
+public Builder setParseConversion(MonetaryOperator conversion);
+public AmountStyle build();
+[...]
+}
+}
+                                </pre>  
+                                </span>
+                            </fieldset>
 
-                                        <label class="col-sm-2 control-label" for="textinput">Postcode</label>
-                                        <div class="col-sm-4">
-                                            <input type="text" placeholder="Post Code" class="form-control"/>
-                                        </div>
-                                    </div>
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="row">
+                                <!--<form class="form-horizontal" role="form">!-->
+                                <legend>_</legend> 
+                                   
+                                Hereby the above summary illustrates quite well, what are the properties that define an amount
+style:<br/><br/>
+● a <i>Locale</i><br/>
+● a pattern, defining the basic number format, similar as defined by
+<i>java.text.DecimalFormat</i>.<br/>
+● grouping sizes, allowing to set flexible grouping sizes. Hereby the order reflects the
+grouping starting from the decimal point going up the significant digits. the last member of
+the grouping definition is used for all subsequent grouping as a default. This can be easily
+illustrated by setting the grouping characters to <i>a</i>,<i>b</i>,<i>c</i> and rendering the amount
+<i>112233445566778899</i>. Assuming a default grouping size and character this number
+might be formatted as <i>112’233’445’566’778’899</i>. With the grouping characters
+set to <i>a</i>,<i>b</i>,<i>c</i> this will be rendered as <i>112c233c445c566b778a899</i>. Now applying
+the same schema for grouping sizes, lets assume <i>3,2,5,4,1</i>. This will lead in
+combination with before to the following output: <i>1<b>c</b>1<b>c</b>2<b>c</b>2<b>c</b>3344<b>c</b>55667<b>b</b>78<b>a</b>899</i>.<br/>
+● a <i>CurrencyStyle</i>, defining the basic currency format of the currency being rendered.<br/>
+● a <i>MonetaryOperator</i> to be applied as display conversion, applied before the amount
+is formatted or printed.<br/>
+● a <i>MonetaryOperator</i> to be applied as parse conversion, after the amount was
+parsed, e.g. for performing a symmetric reverse conversion to the rounding done during
+formatting.<br/>
+                                <!--</form>!-->
+                            </div><!-- /.row -->
 
 
-
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">Country</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="Country" class="form-control"/>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-2 col-sm-10">
-                                            <div class="pull-right">
-                                                <button type="submit" class="btn btn-default">Cancel</button>
-                                                <button type="submit" class="btn btn-primary">Save</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </fieldset>
-                            </form>
-                        </div><!-- /.row -->
-
+                        </div>
 
                     </div>
-                    <div class="col-md-6">
-                        <fieldset>
+                   <div class="col-md-12">
+                        <div class="col-md-6">
+                            <fieldset>
 
-                            <!-- Form Name -->
-                            <legend>Explaination</legend>
-                            <span>
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                            </span>
-                        </fieldset>
+                                <!-- Form Name -->
+                                <legend>Accessing Monetary Amount Formats</legend>
+                                <span>
+ The class javax.money.format.MonetaryFormats models a singleton accessor for
+MonetaryAmountFormat instances as provided by the
+MonetaryAmountFormatProviderSpi instances registered. It provides access to
+MonetaryAmountFormat instances based on<br/>
+● a Locale, or<br/>
+● an AmountStyle.<br/>
+It defines the following access methods:<br/>
+<pre class="prettyprint" align="left">
+public static MonetaryAmountFormat getAmountFormat(Locale locale);
+public static MonetaryAmountFormat getAmountFormat(AmountStyle amountStyle);
+public static Set&lt;Locale&gt; getAvailableLocales();
+</pre>  
+                                </span>
+                            </fieldset>
 
-                    </div>
-                </div>
-                <hr/>
-                <!--This is the second section-->
-                <div class="col-md-12"  style="margin-top: 50px;margin-bottom: 30px">
+                        </div>
+                        <div class="col-md-6">
 
-                    <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. </span>
-                </div>
-                <div class="col-md-12">
-                    <div class="col-md-6">
-                        <fieldset>
-
-                            <!-- Form Name -->
-                            <legend>Explaination</legend>
-                            <span>
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                            </span>
-                        </fieldset>
-
-                    </div>
-                    <div class="col-md-6">
-
-                        <div class="row">
-                            <form class="form-horizontal" role="form">
-                                <fieldset>
-
-                                    <!-- Form Name -->
-                                    <legend>Sample 2</legend>
-
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">Line 1</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="Address Line 1" class="form-control"/>
-                                        </div>
-                                    </div>
-
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">Line 2</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="Address Line 2" class="form-control"/>
-                                        </div>
-                                    </div>
-
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">City</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="City" class="form-control"/>
-                                        </div>
-                                    </div>
-
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">State</label>
-                                        <div class="col-sm-4">
-                                            <input type="text" placeholder="State" class="form-control"/>
-                                        </div>
-
-                                        <label class="col-sm-2 control-label" for="textinput">Postcode</label>
-                                        <div class="col-sm-4">
-                                            <input type="text" placeholder="Post Code" class="form-control"/>
-                                        </div>
-                                    </div>
+                            <div class="row">
+                                <!--<form class="form-horizontal" role="form">!-->
+                                <legend>Formatting Exceptions</legend> 
+                                <span>javax.money.format.MonetaryParseException
+This runtime exception extends MonetaryException and is thrown whenever a
+MonetaryAmount could not be parsed successfully. It provides hereby additional info:<br/>
+● the original input String passed to the MonetaryAmountFormat.<br/>
+● the error index within the input String, where parsing failed unrecoverably.<br/></span>
+                                <!--</form>!-->
+                            </div><!-- /.row -->
 
 
-
-                                    <!-- Text input-->
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label" for="textinput">Country</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" placeholder="Country" class="form-control"/>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-2 col-sm-10">
-                                            <div class="pull-right">
-                                                <button type="submit" class="btn btn-default">Cancel</button>
-                                                <button type="submit" class="btn btn-primary">Save</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </fieldset>
-                            </form>
-                        </div><!-- /.row -->
-
+                        </div>
 
                     </div>
+                    <hr/>
 
                 </div>
-                <hr/>
-
             </div>
-        </div>
-        <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
-            <div class="container">
-               <!--Footer Information-->
-            </div>
-        </nav>
-
-
-
+            <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
+                <div class="container">
+                    <!--Footer Information-->
+                </div>
+            </nav>
+        </h:form>
 
     </ui:define>
 </ui:composition>
