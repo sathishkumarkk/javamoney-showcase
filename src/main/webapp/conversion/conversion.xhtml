@@ -1,0 +1,163 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template/template.xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core" 
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">Conversion</ui:define>
+
+    <ui:define name="content">
+
+        <h:form>
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="col-md-12"  style="margin-top: 50px;margin-bottom: 30px">
+
+                        <span>
+                            Currency conversion is an important aspects when dealing with monetary amounts.  Unfortunately currency conversion has a great variety of how it is implemented. Whereas a web  shop may base its logic on an API provided by a financial backend, that make explicit conversion  even not necessary, in the financial industry, conversion is a very complex aspects, since
+                            <br></br>
+                            ● conversion may be different based on the use case 
+                            <br></br>
+                            ● conversion may be different based on the provided of the exchange rates 
+                            <br></br>
+                            ● conversion rates may vary based on the amount to be converted 
+                            <br></br>
+                            ● conversion rates may vary based on contract or business unit 
+                            <br></br>
+                            ● conversion rates are different related to the target timestamp
+                            <br></br>
+                        </span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+
+                            <div class="row">
+                                <!--<form class="form-horizontal" role="form"> !-->
+                                <fieldset>
+
+                                    <!-- Form Name -->
+                                    <legend>MonetaryConversions  Singleton</legend>
+                                    <span>
+
+                                        The API defines a singleton accessor, called MonetaryConversions to all different aspects related to currency conversion, such as , which provides access  
+                                        <br></br> 
+                                        ● access to providers that offer conversion (exchange) rates. 
+                                        <br></br>
+                                        ● access to conversion operators (extending MonetaryOperator any MonetaryAmount  
+                                        <br></br>
+                                        ● access to further information about the providers currently available. 
+                                        <br></br>                                        
+                                    </span>
+
+
+
+                                </fieldset>
+                                <!--</form>!-->
+                            </div><!-- /.row -->
+
+                        </div>
+                        <div class="col-md-6">
+                            <fieldset>
+
+                                <!-- Form Name -->
+                                <legend>Explaination</legend>
+                                <span>
+                                    Basically converting of amounts is modelled by the CurrencyConversion  extends MonetaryOperator (target) currency. So basically a MonetaryAmount  interface which  . Hereby a conversion is always bound to a specific terminating  can simply be converted by 
+                                    <pre class="prettyprint" align="left">
+        
+MonetaryAmount amount = …; 
+CurrencyConversion conversion = MonetaryConversions.getConversion(“CHF”); 
+MonetaryAmount amount2 = amount.with(conversion); 
+                                
+// A CurrencyConversion  instances used: instance hereby also allows to extract the ExchangeRate   
+
+CurrencyConversion conversion = MonetaryConversions.getConversion(“CHF”); 
+MonetaryAmount amount = …; 
+ExchangeRate rate = conversion.getExchangeRate(amount); 
+
+                                    </pre>
+
+                                </span>
+                            </fieldset>
+
+                        </div>
+                    </div>
+                    <hr/>
+                    <br/>
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <fieldset>
+
+                                <!-- Form Name -->
+                                <legend>Exchange Rates and Rate Providers</legend>
+                                <span>
+
+                                    <pre class="prettyprint" align="left">
+        
+ConversionContext ctx = …; 
+CurrencyConversion conversion = MonetaryConversions.getConversion(“CHF”, ctx); 
+ExchangeRateProvider prov = MonetaryConversions.getExchangeRateProvider(); 
+CurrencyConversion conversion = prov.getCurrencyConversion(“CHF”, ctx); 
+ExchangeRate rate = prov.getExchangeRate(); 
+
+
+                                    </pre>
+                                </span>
+                            </fieldset>
+
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="row">
+                                <!--<form class="form-horizontal" role="form">!-->
+                                <legend>Explaination</legend> 
+
+                                The ExchangeRate models the details of a conversion applied:<br></br>
+                                 
+                                ● the base and terminating (target) CurrencyUnit 
+                                <br></br>
+                                ● the conversion factor used  modeled as NumberValue 
+                                <br></br>
+                                ● additional information if the rate is derived, meaning built up the result of rate chain. <br></br>
+                                    If a rate is derived,<br></br>
+                                    getExchangeRateChain() returns the rate chain that is used to derive the given (final) exchange rate. 
+                                <br></br>
+                                ● a ConversionContext which can contain arbitrary additional information about the provider <br></br>
+                                    that issued the rate and arbitrary further aspects concerning the rate/conversion. 
+                                <br></br>
+                                <br></br>
+                                We have seen in the previous section that an ExchangeRate can be obtained from a CurrencyConversion. 
+                                <br></br>
+                                Hereby a currency conversion is backed up by an  ExchangeRateProvider 
+                                Such a provider allows
+                                <br></br> 
+                                ● to access ExchangeRate  currency,  providing a base and a terminating (target)  
+                                <br></br> 
+                                ● to access CurrencyConversion  instances, providing a terminating (target) currency. 
+                                <br></br> 
+                                <!--</form>!-->
+                            </div><!-- /.row -->
+
+
+                        </div>
+
+                    </div>
+                    <hr/>
+
+                </div>
+
+
+
+            </div>
+            <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
+                <div class="container">
+                    <!--Footer Information-->
+                </div>
+            </nav>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
