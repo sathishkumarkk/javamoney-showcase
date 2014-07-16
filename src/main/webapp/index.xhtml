@@ -1,47 +1,49 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="WEB-INF/template/default.xhtml"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	>
-	<ui:define name="title">JSR 354 Showcase</ui:define>
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="WEB-INF/template/default.xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                >
+    <ui:define name="title">JSR 354 Showcase</ui:define>
 
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-		<div class="jumbotron">
-			<div class="container">
-				<h1>JSR 354 Showcase</h1>
-				<p>
-					A proof of concept project for <a
-						href="http://java.net/projects/javamoney/pages/Home">JSR 354:
-						Money and Currency API</a>
-				</p>
-				<p>
-					<a class="btn btn-primary btn-lg" role="button">Learn more </a>
-				</p>
-			</div>
-		</div>
-            
-            <div class="col-md-12"  style="margin-top: 50px;margin-bottom: 30px">
+        <div class="jumbotron">
+            <div class="container">
+                <h1>JSR 354 Showcase</h1>
+                <p>
+                    A proof of concept project for <a
+                        href="http://java.net/projects/javamoney/pages/Home">JSR 354:
+                        Money and Currency API</a>
+                </p>
+                <p>
+                    <a class="btn btn-primary btn-lg" role="button">Learn more </a>
+                </p>
+            </div>
+        </div>
 
-                        <span>
-Monetary values are a key feature of many applications, yet the JDK provides little or no support.<br/>
-The existing java.util.Currency class is strictly a structure used for representing current
-[ISO4217]<br/>  
-currencies, but not associated values or custom currencies. The JDK also provides
-no support for monetary arithmetic or currency conversion, nor for a standard value type to
-represent a monetary amount.
-		 </span>
-                    </div>
-                                <h:panelGroup>
-                                <h:form prependId="false">
-                                    
-                                    <h:commandButton action="core" value="core" />
-                                    <br/><br/>
-                                    <h:commandButton action="format" value="Formatting" />
-                                </h:form>
-                                </h:panelGroup>
+        <div class="col-md-12"  style="margin-top: 50px;margin-bottom: 30px">
 
-	</ui:define>
+            <span>
+                Monetary values are a key feature of many applications, yet the JDK provides little or no support.<br/>
+                The existing java.util.Currency class is strictly a structure used for representing current
+                [ISO4217]<br/>  
+                currencies, but not associated values or custom currencies. The JDK also provides
+                no support for monetary arithmetic or currency conversion, nor for a standard value type to
+                represent a monetary amount.
+            </span>
+        </div>
+        <h:panelGroup>
+            <h:form prependId="false">
+
+                <h:commandButton action="core" value="core" />
+                <br/><br/>
+                <h:commandButton action="format" value="Formatting" />
+                <br/><br/>
+                <h:commandButton action="conversion" value="Conversion" />
+            </h:form>
+        </h:panelGroup>
+
+    </ui:define>
 </ui:composition>
