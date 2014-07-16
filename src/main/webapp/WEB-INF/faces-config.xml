@@ -16,24 +16,29 @@ limitations under the License.
 -->
 
 <faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
 
-	<navigation-rule>
-		<display-name>index.xhtml</display-name>
-		<from-view-id>/index.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>core</from-outcome>
-			<to-view-id>/core/core.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-                <navigation-case>
-			<from-outcome>format</from-outcome>
-			<to-view-id>/format/format.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
+    <navigation-rule>
+        <display-name>index.xhtml</display-name>
+        <from-view-id>/index.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>core</from-outcome>
+            <to-view-id>/core/core.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>format</from-outcome>
+            <to-view-id>/format/format.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>conversion</from-outcome>
+            <to-view-id>/conversion/conversion.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
 		
-	</navigation-rule>
+    </navigation-rule>
 
 	
 </faces-config>
